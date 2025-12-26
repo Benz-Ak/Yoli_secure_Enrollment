@@ -38,3 +38,39 @@ class DBController:
             if conn and conn.is_connected():
                 cursor.close()
                 conn.close()
+    
+    def get_student_by_name(self, full_name):
+        """retrieve a student and decrypts his informations for display"""
+        conn = None
+        try:
+            conn = mysql.connector.connect(**self.config)
+            cursor = conn.cursor()
+
+            query = "SELECT full_name, course, email, phone FROM students WHERE full_name = %s"
+            cursor.execute(query,(full_name,))
+            result = cursor.fetchone()
+
+            if result:
+                full_name, course, enc_email, enc_phone = result
+
+                #decryption of sensitive data
+                dec_email = self.cipher_tool.decrypt_data(enc_email)
+                dec_phone = self.cipher_tool.decrypt_data(enc_phone)
+
+                student_info = {
+                    'full_name': full_name,
+                    'course': course,
+                    'email': dec_email,
+                    'phone': dec_phone
+                }
+                return f"{student_info}"
+            else:
+                print("Student not found.")
+                return None
+        except Exception as err:
+            print(f"Error when reading: {err}")
+            return None
+        finally:
+            if conn and conn.is_connected():
+                cursor.close()
+                conn.close()
