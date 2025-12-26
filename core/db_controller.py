@@ -1,0 +1,40 @@
+import mysql.connector
+
+class DBController:
+    def __init__(self, cipher_tool):
+        """we give it the encryption tool to use."""
+        self.cipher_tool = cipher_tool
+
+        self.config = { 
+            'host':'localhost',
+            'user':'root',
+            'password':'',
+            'database':'yoli_db'
+        }
+    
+    def save_student(self, full_name, course, email, phone):
+        """save a student to the database, encrypting sensitive data."""
+        conn = None
+        try:
+            # connexion to MySQL
+            conn = mysql.connector.connect(**self.config)
+            cursor = conn.cursor()
+
+            #data encryption using the cipher tool
+            enc_email = self.cipher_tool.encrypt_data(email)
+            enc_phone = self.cipher_tool.encrypt_data(phone)
+
+            # SQL Insert
+            query = "INSERT INTO students (full_name, course, email, phone) VALUES (%s, %s, %s, %s)"
+            values = (full_name, course, enc_email, enc_phone)
+
+            #execution
+            cursor.execute(query, values)
+            conn.commit()
+            print(f"Successfull! Student {full_name} saved with data encrypted.")
+        except mysql.connector.Error as err:
+            print(f"database error: {err}")
+        finally:
+            if conn and conn.is_connected():
+                cursor.close()
+                conn.close()
