@@ -10,7 +10,7 @@ db = DBController(cipher)
 
 print("Testing database selection and decryption...")
 
-student_name = db.get_student_by_name("akoaya nsengue benz brown")
+student_name = db.get_student_by_name("Jean eone")
 
 if isinstance(student_name, dict):
     print("Name: {student_name['full_name']}")
@@ -18,4 +18,4 @@ if isinstance(student_name, dict):
     print("Email: {student_name['email']}")
     print("Phone: {student_name['phone']}")
 else:
-    print(student_name)
+    print(f"{student_name}")

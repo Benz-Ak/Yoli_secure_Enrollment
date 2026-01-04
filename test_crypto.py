@@ -6,7 +6,7 @@ key = km.get_or_create_key()
 
 cipher = YoliCipher(key)
 
-email = "user@example.com"
+email = "support@yolitechnologies.com"
 print(f"Original Email: {email}")
 encrypted_email = cipher.encrypt_data(email)
 print(f"Encrypted Email: {encrypted_email.hex()}")
