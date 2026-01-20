@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLI SECURE - Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+
+<body>
+    <div class="dashboard">
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-shield-halved"></i>
+                <span>YOLI SECURE</span>
+            </div>
+            <ul class="nav-links">
+                <li class="{% if active_page == 'enrollment' %}active{% endif %}">
+                    <a href="{{ url_for('index') }}"><i class="fas fa-user-plus"></i> Enrollment</a>
+                </li>
+                <li class="{% if active_page == 'database' %}active{% endif %}">
+                    <a href="{{ url_for('database') }}"><i class="fas fa-database"></i> Database</a>
+                </li>
+                <li class="{% if active_page == 'keymanager' %}active{% endif %}">
+                    <a href="{{ url_for('key_manager') }}"><i class="fas fa-key"></i> Key Manager</a>
+                </li>
+                <li class="{% if active_page == 'backup' %}active{% endif %}">
+                    <a href="{{ url_for('backup_view') }}"><i class="fas fa-file-export"></i> Backup</a>
+                </li>
+            </ul>
+            <div class="sidebar-footer"
+                style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                <a href="{{ url_for('logout') }}" class="logout-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}"
+                style="padding: 15px; border-radius: 10px; margin-bottom: 20px; background: rgba(255,255,255,0.1); border-left: 5px solid var(--accent-primary);">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+
+</html>

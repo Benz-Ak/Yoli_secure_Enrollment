@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<header>
+    <h1>New Student Enrollment</h1>
+    <div class="status">System Secure <span class="dot"></span></div>
+</header>
+
+<section class="form-container">
+    <form action="/enroll" method="POST">
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" name="full_name" required placeholder="John Doe" autocomplete="new-password">
+        </div>
+        <div class="input-group">
+            <label>Course / Major</label>
+            <input type="text" name="course" required placeholder="Computer Science" autocomplete="new-password">
+        </div>
+        <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" name="email" required placeholder="john@example.com" autocomplete="new-password">
+        </div>
+        <div class="input-group">
+            <label>Phone Number</label>
+            <input type="tel" name="phone" required placeholder="+237 600 000 000" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn-save">
+            <i class="fas fa-lock"></i> Encrypt & Save (AES-GCM)
+        </button>
+    </form>
+</section>
+{% endblock %}

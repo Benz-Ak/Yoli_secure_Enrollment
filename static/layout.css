@@ -1,0 +1,33 @@
+* {
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+}
+
+body {
+    background: #f4f4f6;
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+nav {
+    border-bottom: 1px solid #dddfe6;
+    background: #f4f4f6;
+
+}
+
+nav>div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 3rem;
+}
+
+main {
+    max-width: 400px;
+    border: 1px solid brown;
+    padding: 10rem 4rem;
+    align-self: center;
+    margin: 2rem 0;
+}

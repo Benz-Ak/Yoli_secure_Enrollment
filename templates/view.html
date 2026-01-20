@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl overflow-hidden">
+    <div class="px-8 py-6 border-b border-slate-700 flex justify-between items-center">
+        <h2 class="text-xl font-bold text-white">Database Records (Decrypted)</h2>
+        <span class="px-3 py-1 bg-emerald-900/30 text-emerald-400 text-xs rounded-full border border-emerald-800">Live
+            Decryption Active</span>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-900/50">
+                    <th class="px-8 py-4 font-semibold text-slate-400 text-sm uppercase tracking-wider">Student Name
+                    </th>
+                    <th class="px-8 py-4 font-semibold text-slate-400 text-sm uppercase tracking-wider">Course</th>
+                    <th class="px-8 py-4 font-semibold text-slate-400 text-sm uppercase tracking-wider">Email</th>
+                    <th class="px-8 py-4 font-semibold text-slate-400 text-sm uppercase tracking-wider">Phone</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-700">
+                {% for student in students %}
+                <tr class="hover:bg-slate-700/30 transition">
+                    <td class="px-8 py-4 text-white font-medium">{{ student.full_name }}</td>
+                    <td class="px-8 py-4 text-slate-300">{{ student.course }}</td>
+                    <td class="px-8 py-4 text-emerald-400 font-mono text-sm">{{ student.email }}</td>
+                    <td class="px-8 py-4 text-emerald-400 font-mono text-sm">{{ student.phone }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

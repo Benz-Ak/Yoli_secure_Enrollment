@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>YOLI SECURE - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body style="display: flex; justify-content: center; align-items: center; background: #080b12;">
+
+    <div class="form-container" style="max-width: 400px; text-align: center;">
+        <div class="logo" style="justify-content: center; margin-bottom: 2rem;">
+            <i class="fas fa-shield-halved" style="font-size: 3rem; color: #3b82f6;"></i>
+        </div>
+        <h2 style="margin-bottom: 1.5rem;">Secure Access Control</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form action="/login" method="POST">
+            <div class="input-group">
+                <label>Administrator ID</label>
+                <input type="text" name="username" required placeholder="Username" autocomplete="new-password">
+            </div>
+            <div class="input-group">
+                <label>Access Key</label>
+                <input type="password" name="password" required placeholder="••••••••" autocomplete="new-password">
+            </div>
+            <button type="submit" class="btn-save">
+                <i class="fas fa-sign-in-alt"></i> Authenticate
+            </button>
+        </form>
+    </div>
+
+</body>
+
+</html>

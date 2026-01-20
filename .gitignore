@@ -1,0 +1,29 @@
+# --- SÉCURITÉ (TRÈS IMPORTANT) ---
+# Ne jamais push les clés de chiffrement ou les sauvegardes
+*.key
+*.enc
+*.pem
+master.key
+students_backup.enc
+
+# --- ENVIRONNEMENT PYTHON ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# --- BASE DE DONNÉES ---
+*.db
+*.sqlite
+*.sql
+# Si tu utilises MySQL, ne pas inclure de fichiers de config contenant des mots de passe
+config.ini
+instance/
+
+# --- INTERFACE & OS ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,40 @@
+{% extends "base.html" %} {% block content %}
+<main class="main-content">
+    <header>
+        <h1>Registry Management</h1>
+        <div class="status">Live Decryption Active <span class="dot"></span></div>
+    </header>
+
+    <section class="table-container" style="margin-top: 2rem; overflow-x: auto;">
+        <table style="width: 100%; border-collapse: separate; border-spacing: 0 10px;">
+            <thead>
+                <tr style="color: var(--text-muted); text-align: left; text-transform: uppercase; font-size: 0.8rem;">
+                    <th style="padding: 15px;">Full Name</th>
+                    <th>Course</th>
+                    <th>Email Address</th>
+                    <th>Phone</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr
+                    style="background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); transition: 0.3s;">
+                    <td style="padding: 20px; border-radius: 12px 0 0 12px; font-weight: 600;">{{ student.full_name }}
+                    </td>
+                    <td>{{ student.course }}</td>
+                    <td style="color: var(--accent-primary); font-family: 'Courier New';">{{ student.email }}</td>
+                    <td>{{ student.phone }}</td>
+                    <td style="border-radius: 0 12px 12px 0; text-align: center;">
+                        <a href="/delete/{{ student.email }}" onclick="return confirm('Are you sure?')"
+                            style="color: #ef4444; text-decoration: none; margin: 0 10px;">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+{% endblock %}

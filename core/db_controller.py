@@ -29,38 +29,6 @@ class DBController:
         finally:
             conn.close()
 
-    def save_student(self, full_name, course, email, phone):
-        """Encrypt and save a student."""
-        conn = None
-        try:
-            # 1. Connexion
-            conn = pymysql.connect(**self.config)
-            cursor = conn.cursor()
-
-            if self.is_already_enrolled(email):
-                print(f" Insertion aborted: {email} is already in the database.")
-                return
-
-            # 2. Chiffrement
-            enc_email = self.cipher_tool.encrypt_data(email)
-            enc_phone = self.cipher_tool.encrypt_data(phone)
-
-            # 3. Insertion SQL
-            query = "INSERT INTO students (full_name, course, email, phone) VALUES (%s, %s, %s, %s)"
-            values = (full_name, course, enc_email, enc_phone)
-
-            cursor.execute(query, values)
-            print(f"Successfull! Student {full_name} saved with data encrypted.")
-
-        except pymysql.Error as err:
-            print(f"Database error: {err}")
-        except Exception as e:
-            print(f"Autre erreur: {e}")
-        finally:
-            if conn:
-                cursor.close()
-                conn.close()
-    
     def get_student_by_name(self, full_name):
         """Retrieve and decipher a student's information."""
         conn = None
@@ -100,3 +68,79 @@ class DBController:
     def get_connection(self):
         """Returns a new PyMySQL connection for external operations."""
         return pymysql.connect(**self.config)
+    
+    def get_all_students(self):
+        """Retrieves all students and decrypts their data."""
+        conn = self.get_connection()
+        students = []
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT full_name, course, email, phone FROM students")
+                rows = cursor.fetchall()
+                for row in rows:
+                    students.append({
+                        'full_name': row[0],
+                        'course': row[1],
+                        'email': self.cipher_tool.decrypt_data(row[2]),
+                        'phone': self.cipher_tool.decrypt_data(row[3])
+                    })
+            return students
+        finally:
+            conn.close()
+    
+    def save_student(self, full_name, course, email, phone):
+        """Encrypt and save a student."""
+        conn = None
+        try:
+            conn = self.get_connection()
+            # 1. Vérification des doublons
+            if self.is_already_enrolled(email):
+                return "DUPLICATE" # On retourne un code spécifique
+
+            # 2. Chiffrement et Insertion
+            with conn.cursor() as cursor:
+                enc_email = self.cipher_tool.encrypt_data(email)
+                enc_phone = self.cipher_tool.encrypt_data(phone)
+                query = "INSERT INTO students (full_name, course, email, phone) VALUES (%s, %s, %s, %s)"
+                cursor.execute(query, (full_name, course, enc_email, enc_phone))
+            return True
+
+        except Exception as e:
+            print(f"Erreur: {e}")
+            return False
+        finally:
+            if conn: conn.close()
+
+    def delete_student(self, email_to_delete):
+        """Supprime un étudiant en déchiffrant pour trouver le bon email."""
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT id, email FROM students")
+                rows = cursor.fetchall()
+                for row in rows:
+                    if self.cipher_tool.decrypt_data(row[1]) == email_to_delete:
+                        cursor.execute("DELETE FROM students WHERE id = %s", (row[0],))
+                        return True
+            return False
+        finally:
+            conn.close()
+    
+    
+    def update_student(self, old_email, new_name, new_course, new_phone):
+        conn = self.get_connection()
+        try:
+            with conn.cursor() as cursor:
+                # On retrouve l'étudiant par son email déchiffré
+                cursor.execute("SELECT id, email FROM students")
+                rows = cursor.fetchall()
+                for row in rows:
+                    if self.cipher_tool.decrypt_data(row[1]) == old_email:
+                        # Re-chiffrement du nouveau téléphone
+                        enc_phone = self.cipher_tool.encrypt_data(new_phone)
+                        cursor.execute("UPDATE students SET full_name=%s, course=%s, phone=%s WHERE id=%s", 
+                                    (new_name, new_course, enc_phone, row[0]))
+                        return True
+            return False
+        finally:
+            conn.close()
