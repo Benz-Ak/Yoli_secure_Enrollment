@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="main-content">
+    <header>
+        <h1>Data Recovery Center</h1>
+        <div class="status">Recovery Mode <span class="dot"
+                style="background-color: var(--accent-danger); box-shadow: 0 0 8px var(--accent-danger);"></span></div>
+    </header>
+
+    <div class="backup-grid">
+        <div class="form-container backup-card">
+            <div class="icon-header" style="color: var(--accent-success);">
+                <i class="fas fa-file-import"></i>
+            </div>
+            <h2>Restore Database</h2>
+            <p class="description">
+                Upload your <strong>students_backup.enc</strong> file to reconstruct the registry.
+                <br><span style="color: var(--accent-danger); font-size: 0.8rem; font-weight: bold;">
+                    <i class="fas fa-exclamation-triangle"></i> WARNING: This will overwrite existing data.
+                </span>
+            </p>
+
+            <form action="/restore" method="POST" enctype="multipart/form-data">
+                <div class="upload-area" id="drop-zone"
+                    style="border: 2px dashed var(--glass-border); padding: 40px; border-radius: 15px; margin-bottom: 25px; transition: 0.3s; cursor: pointer; text-align: center;">
+                    <i class="fas fa-cloud-upload-alt"
+                        style="font-size: 3rem; color: var(--accent-primary); margin-bottom: 15px;"></i>
+                    <p id="file-name" style="color: var(--text-muted);">Click or Drag & Drop your encrypted backup
+                        (.enc)</p>
+                    <input type="file" name="backup_file" id="file-input" hidden accept=".enc">
+                </div>
+
+                <button type="submit" class="btn-save btn-backup"
+                    style="background: linear-gradient(135deg, #059669, #10b981);">
+                    <i class="fas fa-undo"></i> Execute Recovery
+                </button>
+            </form>
+        </div>
+
+        <div class="info-sidebar">
+            <div class="alert alert-danger"
+                style="background: rgba(239, 68, 68, 0.05); border-left: 4px solid var(--accent-danger);">
+                <i class="fas fa-shield-virus"></i>
+                <p><strong>Integrity Verification:</strong> The system will validate the AES-GCM tag before writing to
+                    disk. If the file has been tampered with, the process will be blocked.</p>
+            </div>
+
+            <div class="backup-log">
+                <h3>Pre-flight Checks</h3>
+                <ul class="log-list">
+                    <li><i class="fas fa-check"></i> Master Key Loaded</li>
+                    <li><i class="fas fa-check"></i> DB Write Permissions: OK</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const fileNameDisplay = document.getElementById('file-name');
+
+    dropZone.onclick = () => fileInput.click();
+
+    fileInput.onchange = (e) => {
+        if (e.target.files.length > 0) {
+            fileNameDisplay.innerText = "Selected: " + e.target.files[0].name;
+            dropZone.style.borderColor = "var(--accent-success)";
+            dropZone.style.background = "rgba(16, 185, 129, 0.05)";
+        }
+    };
+</script>
+{% endblock %}

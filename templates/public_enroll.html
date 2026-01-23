@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Enrollment | YOLI SECURE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='public_enroll.css') }}">
+</head>
+
+<body class="public-body">
+
+    <div class="top-nav">
+        <a href="{{ url_for('login') }}" class="login-btn-top">
+            <i class="fas fa-lock"></i> Staff Access
+        </a>
+    </div>
+
+    <div class="enroll-card">
+        <div class="header">
+            <i class="fas fa-user-graduate"></i>
+            <h2>Join Our Program</h2>
+            <p class="subtitle">Enter your details to begin your journey</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form action="/enroll" method="POST" class="form-grid">
+            <div class="input-group">
+                <label>Full Name</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="full_name" required placeholder="Ex: Jean Dupont">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Desired Course</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-bookmark"></i>
+                    <input type="text" name="course" required placeholder="Ex: Cyber Security">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" required placeholder="contact@univ.com">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Phone Number</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" name="phone" required placeholder="+237 6xx xxx xxx">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-paper-plane"></i> Submit My Application
+            </button>
+
+            <div class="security-footer">
+                <i class="fas fa-shield-check"></i>
+                Data automatically secured with end-to-end AES-GCM encryption.
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

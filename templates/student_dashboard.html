@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="main-content">
+    <header>
+        <h1>Welcome, {{ session['user_data']['full_name'] }}</h1>
+        <div class="status">Role: Student <span class="dot" style="background-color: var(--accent-success);"></span>
+        </div>
+    </header>
+
+    <div class="backup-grid">
+        <div class="form-container">
+            <div class="icon-header" style="color: var(--accent-primary);">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <h3>Your Encrypted Profile</h3>
+            <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 20px 0;">
+
+            <div class="info-row" style="margin-bottom: 15px;">
+                <span style="color: var(--text-muted);">Course:</span>
+                <span style="font-weight: bold;">{{ session['user_data']['course'] }}</span>
+            </div>
+            <div class="info-row" style="margin-bottom: 15px;">
+                <span style="color: var(--text-muted);">Email:</span>
+                <span>{{ session['user_data']['email'] }}</span>
+            </div>
+            <div class="info-row">
+                <span style="color: var(--text-muted);">Phone:</span>
+                <span>{{ session['user_data']['phone'] }}</span>
+            </div>
+        </div>
+
+        <div class="info-sidebar">
+            <div class="alert alert-success">
+                <i class="fas fa-lock"></i>
+                <p>Your data is currently decrypted for this session using the System Master Key.</p>
+            </div>
+            <div class="backup-log">
+                <h3>Encryption Details</h3>
+                <ul class="log-list">
+                    <li><i class="fas fa-shield-check"></i> Protocol: AES-GCM</li>
+                    <li><i class="fas fa-key"></i> Mode: Real-time Decryption</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -5,42 +5,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOLI SECURE - Admin</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='../static/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin_page.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 </head>
 
 <body>
     <div class="dashboard">
-        <nav class="sidebar">
-            <div class="logo">
-                <i class="fas fa-shield-halved"></i>
-                <span>YOLI SECURE</span>
-            </div>
-            <ul class="nav-links">
-                <li class="{% if active_page == 'enrollment' %}active{% endif %}">
-                    <a href="{{ url_for('index') }}"><i class="fas fa-user-plus"></i> Enrollment</a>
-                </li>
-                <li class="{% if active_page == 'database' %}active{% endif %}">
-                    <a href="{{ url_for('database') }}"><i class="fas fa-database"></i> Database</a>
-                </li>
-                <li class="{% if active_page == 'keymanager' %}active{% endif %}">
-                    <a href="{{ url_for('key_manager') }}"><i class="fas fa-key"></i> Key Manager</a>
-                </li>
-                <li class="{% if active_page == 'backup' %}active{% endif %}">
-                    <a href="{{ url_for('backup_view') }}"><i class="fas fa-file-export"></i> Backup</a>
-                </li>
-            </ul>
-            <div class="sidebar-footer"
-                style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--glass-border);">
-                <a href="{{ url_for('logout') }}" class="logout-link">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </nav>
+<div class="sidebar">
+    <div class="logo">
+        <i class="fas fa-shield-halved"></i> YOLI SECURE
+    </div>
 
-        <main class="main-content">
+    <ul class="nav-links">
+        {% if session['role'] == 'admin' %}
+        <li class="{{ 'active' if active_page == 'enrollment' }}">
+            <a href="{{ url_for('index_admin') }}"><i class="fas fa-user-plus"></i> Enrollment</a>
+        </li>
+        <li class="{{ 'active' if active_page == 'database' }}">
+            <a href="{{ url_for('database_view') }}"><i class="fas fa-database"></i> Database</a>
+        </li>
+        <li class="{{ 'active' if active_page == 'restoration' }}">
+            <a href="{{ url_for('restoration_view') }}"><i class="fas fa-undo"></i> Restore Center</a>
+        </li>
+        {% else %}
+        <li class="{{ 'active' if active_page == 'student_dash' }}">
+            <a href="{{ url_for('student_dashboard') }}"><i class="fas fa-id-card"></i> My Profile</a>
+        </li>
+        {% endif %}
+    </ul>
+
+    <div class="sidebar-footer">
+        <a href="{{ url_for('logout') }}" class="logout-link">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>        <main class="main-content">
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             {% for category, message in messages %}

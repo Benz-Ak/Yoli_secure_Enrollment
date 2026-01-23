@@ -144,3 +144,30 @@ class DBController:
             return False
         finally:
             conn.close()
+
+    def get_student_by_email(self, email_to_find):
+        """
+        Parcourt la table des étudiants, déchiffre les emails pour trouver la correspondance.
+        Retourne les données déchiffrées + le mot de passe (haché).
+        """
+        try:
+            cursor = self.connection.cursor()
+            # On sélectionne les colonnes nécessaires
+            cursor.execute("SELECT full_name, course, email, phone FROM students")
+            rows = cursor.fetchall()
+
+            for row in rows:
+                # On doit déchiffrer l'email stocké pour le comparer à l'entrée
+                decrypted_email = self.cipher.decrypt_data(row[2])
+                
+                if decrypted_email == email_to_find:
+                    return {
+                        "full_name": row[0],
+                        "course": row[1],
+                        "email": decrypted_email,
+                        "phone": self.cipher.decrypt_data(row[3]),
+                    }
+            return None
+        except Exception as e:
+            print(f"Erreur lors de la recherche étudiant: {e}")
+            return None

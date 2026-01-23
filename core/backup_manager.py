@@ -34,27 +34,52 @@ class BackupManager:
 
     def restore_from_file(self, filename, cipher_tool):
         """Reads the backup file, decodes Base64, and decrypts the data."""
-        path = os.path.join(self.backup_dir, filename)
-        if not os.path.exists(path):
-            print(" File not found.")
-            return
+        # 1. Vérifier si le chemin est complet ou relatif
+        if os.path.isabs(filename):
+            path = filename
+        else:
+            path = os.path.join(self.backup_dir, filename)
 
-        print(f"--- Restoring from {filename} ---")
+        if not os.path.exists(path):
+            print(f" [!] File not found at: {path}")
+            return False
+
+        print(f"--- Restoring from {os.path.basename(path)} ---")
+        
         try:
-            with open(path, "r") as f:
+            # 2. On utilise 'r' car les données sont en Base64 (texte) 
+            # mais on gère l'encodage pour éviter les erreurs de caractères
+            with open(path, "r", encoding="utf-8") as f:
                 for line in f:
-                    parts = line.strip().split("|")
-                    if len(parts) < 4: continue
+                    line = line.strip()
+                    if not line: continue  # Saute les lignes vides
+                    
+                    parts = line.split("|")
+                    if len(parts) < 4: 
+                        print(" [!] Skipping malformed line.")
+                        continue
 
                     name, course = parts[0], parts[1]
-                    # Convert Base64 back to encrypted bytes
-                    enc_email = base64.b64decode(parts[2])
-                    enc_phone = base64.b64decode(parts[3])
+                    
+                    try:
+                        # 3. Décodage Base64 vers Bytes
+                        enc_email = base64.b64decode(parts[2])
+                        enc_phone = base64.b64decode(parts[3])
 
-                    # Decrypt the bytes back to plain text
-                    dec_email = cipher_tool.decrypt_data(enc_email)
-                    dec_phone = cipher_tool.decrypt_data(enc_phone)
+                        # 4. Déchiffrement AES-GCM
+                        dec_email = cipher_tool.decrypt_data(enc_email)
+                        dec_phone = cipher_tool.decrypt_data(enc_phone)
 
-                    print(f" Restored: {name} | {course} | Email: {dec_email} | Tel: {dec_phone}")
+                        # 5. Réinsertion en base de données (Crucial pour la restauration)
+                        self.db.save_student(name, course, dec_email, dec_phone)
+                        
+                        print(f" [+] Decrypted: {name} | {dec_email}")
+                        
+                    except Exception as e:
+                        print(f" [!] Decryption failed for {name}: {e}")
+                        return False # Arrêt si la clé est invalide
+            return True
+            
         except Exception as e:
-            print(f" Restoration Error: {type(e).__name__} - {e}")
+            print(f" [!] File Access Error: {e}")
+            return False
